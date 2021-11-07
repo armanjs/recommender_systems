@@ -1,6 +1,12 @@
 # Import Pandas
 import pandas as pd
 
+#Import time
+import time
+
+#Simple Recommender
+
+start_time = time.time()
 # Load Movies Metadata
 metadata = pd.read_csv('movies_metadata.csv', low_memory=False)
 
@@ -33,10 +39,16 @@ q_movies['score'] = q_movies.apply(weighted_rating, axis=1)
 
 #Sort movies based on score calculated above
 q_movies = q_movies.sort_values('score', ascending=False)
+print("Simple Recommender SETUP Runtime: %s seconds" % (time.time() - start_time))
 
-#Print the top 15 movies
-q_movies[['title', 'vote_count', 'vote_average', 'score']].head(20)
+start_time = time.time()
+#Print the top 20 movies
+print(q_movies[['title', 'vote_count', 'vote_average', 'score']].head(20))
+print("Simple Recommender Runtime: %s seconds" % (time.time() - start_time))
 
+#Plot Description Based Recommender
+
+start_time = time.time()
 #Print plot overviews of the first 5 movies.
 metadata['overview'].head()
 
@@ -93,14 +105,22 @@ def get_recommendations(title, cosine_sim=cosine_sim):
     # Return the top 10 most similar movies
     return metadata['title'].iloc[movie_indices]
 
-get_recommendations('The Dark Knight Rises')
+print("Plot Based Recommender SETUP Runtime: %s seconds" % (time.time() - start_time))
+
+start_time = time.time()
+print(get_recommendations('The Master'))
+print("Plot Based Recommender Runtime: %s seconds" % (time.time() - start_time))
+
+#Credits, Genres, and Keywords Based Recommender
+
+start_time = time.time()
 
 # Load keywords and credits
 credits = pd.read_csv('credits.csv')
 keywords = pd.read_csv('keywords.csv')
 
 # Remove rows with bad IDs.
-metadata = metadata.drop([19730, 29503, 35587])
+metadata = metadata.drop([19730, 29503])
 
 # Convert IDs to int. Required for merging
 keywords['id'] = keywords['id'].astype('int')
@@ -193,4 +213,8 @@ cosine_sim2 = cosine_similarity(count_matrix, count_matrix)
 metadata = metadata.reset_index()
 indices = pd.Series(metadata.index, index=metadata['title'])
 
-get_recommendations('The Dark Knight Rises', cosine_sim2)
+print("Credits, Genres, and Keywords Based Recommender SETUP Runtime: %s seconds" % (time.time() - start_time))
+
+start_time = time.time()
+print(get_recommendations('There Will Be Blood', cosine_sim2))
+print("Credits, Genres, and Keywords Based Recommender Runtime: %s seconds" % (time.time() - start_time))
