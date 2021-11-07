@@ -218,4 +218,3 @@ print("Credits, Genres, and Keywords Based Recommender SETUP Runtime: %s seconds
 start_time = time.time()
 print(get_recommendations('There Will Be Blood', cosine_sim2))
 print("Credits, Genres, and Keywords Based Recommender Runtime: %s seconds" % (time.time() - start_time))
-
